@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
+import GradientBGicon from './GradientBGicon';
+import ProfilePic from './ProfilePic';
 
 interface HeaderBarProps {
     title?: string;
@@ -9,7 +11,13 @@ interface HeaderBarProps {
 const HeaderBar: React.FC<HeaderBarProps> = ({title}) => {
   return (
     <View style={styles.HeaderContainer}>
-      <Text style={styles.HeaderText}>{title}</Text>
+        <GradientBGicon 
+            name="menu"
+            color={COLORS.primaryLightGreyHex}
+            size={FONTSIZE.size_16}
+        />
+        <Text style={styles.HeaderText}>{title}</Text>
+        <ProfilePic />
     </View>
   )
 }
