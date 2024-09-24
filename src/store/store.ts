@@ -14,6 +14,7 @@ export const useStore = create(
       FavoritesList: [],
       CartList: [],
       OrderHistoryList: [],
+
       addToCart: (cartItem: any) =>
         set(
           produce(state => {
@@ -51,6 +52,7 @@ export const useStore = create(
             }
           }),
         ),
+        
       calculateCartPrice: () =>
         set(
           produce(state => {

@@ -34,7 +34,7 @@ const getCoffeeList = (category: string, data: any) => {
   }
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}: any) => {
   const CoffeeList = useStore( (state: any) => state.CoffeeList );
   const BeanList = useStore( (state: any) => state.BeanList );
   // console.log('CoffeeLIST =', CoffeeList.length)
