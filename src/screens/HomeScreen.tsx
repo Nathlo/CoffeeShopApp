@@ -2,6 +2,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput, TouchableOpac
 import React, { useRef, useState }  from 'react'
 import { useStore } from '../store/store'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { navigation } from '@react-navigation/native';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING, } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import CustomIcon from '../components/CustomIcon';
@@ -250,14 +251,45 @@ const HomeScreen = () => {
 
         <Text style={styles.CoffeeBeansTitle}>Coffee Beans</Text>  
 
-
-
         {/* Beans Flatlist */}
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={BeanList}
+          contentContainerStyle={[
+            styles.FlatListContainer,
+            {marginBottom: tabBarHeight},
+          ]}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Details', {
+                    index: item.index,
+                    id: item.id,
+                    type: item.type,
+                  });
+                }}>
+                <CoffeeCard
+                  id={item.id}
+                  index={item.index}
+                  type={item.type}
+                  roasted={item.roasted}
+                  imagelink_square={item.imagelink_square}
+                  name={item.name}
+                  special_ingredient={item.special_ingredient}
+                  average_rating={item.average_rating}
+                  price={item.prices[2]}
+                  buttonPressHandler={CoffeCardAddToCart}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />  
 
       </ScrollView>
     </View>
-
-
 
   )
 }
