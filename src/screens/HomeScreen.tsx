@@ -82,6 +82,7 @@ const HomeScreen = () => {
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.ScrollViewFlex} >
+          
         {/* App Header */}
         <HeaderBar  />  
 
@@ -134,6 +135,46 @@ const HomeScreen = () => {
           )}
         </View>
 
+        {/* Category Scroller */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.CategoryScrollViewStyle}>
+          {categories.map((data, index) => (
+            <View
+              key={index.toString()}
+              style={styles.CategoryScrollViewContainer}>
+              <TouchableOpacity
+                style={styles.CategoryScrollViewItem}
+                onPress={() => {
+                  ListRef?.current?.scrollToOffset({
+                    animated: true,
+                    offset: 0,
+                  });
+                  setCategoryIndex({index: index, category: categories[index]});
+                  setSortedCoffee([
+                    ...getCoffeeList(categories[index], CoffeeList),
+                  ]);
+                }}>
+                <Text
+                  style={[
+                    styles.CategoryText,
+                    categoryIndex.index == index
+                      ? {color: COLORS.primaryOrangeHex}
+                      : {},
+                  ]}>
+                  {data}
+                </Text>
+                {categoryIndex.index == index ? (
+                  <View style={styles.ActiveCategory} />
+                ) : (
+                  <></>
+                )}
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+
 
 
       </ScrollView>
@@ -176,7 +217,28 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryWhiteHex,
   },
-
+  CategoryScrollViewStyle: {
+    paddingHorizontal: SPACING.space_20,
+    marginBottom: SPACING.space_20,
+  },
+  CategoryScrollViewContainer: {
+    paddingHorizontal: SPACING.space_15,
+  },
+  CategoryScrollViewItem: {
+    alignItems: 'center',
+  },
+  CategoryText: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryLightGreyHex,
+    marginBottom: SPACING.space_4,
+  },
+  ActiveCategory: {
+    height: SPACING.space_10,
+    width: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_10,
+    backgroundColor: COLORS.primaryOrangeHex,
+  },
 
 })
 
