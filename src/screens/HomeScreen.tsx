@@ -5,6 +5,9 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING, } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import CustomIcon from '../components/CustomIcon';
+import {FlatList} from 'react-native';
+import CoffeeCard from '../components/CoffeeCard';
+import {Dimensions} from 'react-native';
 
 
 const getCategoriesFromData = (data: any) => {
@@ -34,6 +37,9 @@ const HomeScreen = () => {
   const CoffeeList = useStore( (state: any) => state.CoffeeList );
   const BeanList = useStore( (state: any) => state.BeanList );
   // console.log('CoffeeLIST =', CoffeeList.length)
+
+  const addToCart = useStore((state: any) => state.addToCart);
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
 
   const [categories, setCategories] = useState(
     getCategoriesFromData(CoffeeList),
@@ -75,6 +81,33 @@ const HomeScreen = () => {
     setSearchText('');
   };
 
+  const CoffeCardAddToCart = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices,
+    });
+    calculateCartPrice();
+    ToastAndroid.showWithGravity(
+      `${name} is Added to Cart`,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
+  };
 
   return (
     <View style={styles.ScreeContainer}>
@@ -82,7 +115,7 @@ const HomeScreen = () => {
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.ScrollViewFlex} >
-          
+
         {/* App Header */}
         <HeaderBar  />  
 
@@ -175,7 +208,51 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
 
+        {/* Coffee Flatlist */}
+        <FlatList
+          ref={ListRef}
+          horizontal
+          ListEmptyComponent={
+            <View style={styles.EmptyListContainer}>
+              <Text style={styles.CategoryText}>No Coffee Available</Text>
+            </View>
+          }
+          showsHorizontalScrollIndicator={false}
+          data={sortedCoffee}
+          contentContainerStyle={styles.FlatListContainer}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Details', {
+                    index: item.index,
+                    id: item.id,
+                    type: item.type,
+                  });
+                }}>
+                <CoffeeCard
+                  id={item.id}
+                  index={item.index}
+                  type={item.type}
+                  roasted={item.roasted}
+                  imagelink_square={item.imagelink_square}
+                  name={item.name}
+                  special_ingredient={item.special_ingredient}
+                  average_rating={item.average_rating}
+                  price={item.prices[2]}
+                  buttonPressHandler={CoffeCardAddToCart}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />
 
+        <Text style={styles.CoffeeBeansTitle}>Coffee Beans</Text>  
+
+
+
+        {/* Beans Flatlist */}
 
       </ScrollView>
     </View>
@@ -239,7 +316,24 @@ const styles = StyleSheet.create({
     borderRadius: BORDERRADIUS.radius_10,
     backgroundColor: COLORS.primaryOrangeHex,
   },
-
-})
+  EmptyListContainer: {
+    width: Dimensions.get('window').width - SPACING.space_30 * 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.space_36 * 3.6,
+  },
+  FlatListContainer: {
+    gap: SPACING.space_20,
+    paddingVertical: SPACING.space_20,
+    paddingHorizontal: SPACING.space_30,
+  },
+  CoffeeBeansTitle: {
+    fontSize: FONTSIZE.size_18,
+    marginLeft: SPACING.space_30,
+    marginTop: SPACING.space_20,
+    fontFamily: FONTFAMILY.poppins_medium,
+    color: COLORS.secondaryLightGreyHex,
+  },
+});
 
 export default HomeScreen
